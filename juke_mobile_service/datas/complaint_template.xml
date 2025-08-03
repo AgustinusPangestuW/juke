@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record model="mobile_service.complaint_template" id="mobile_service_complaint_template_screen_broken">
+            <field name="name">Broken Screen</field>
+            <field name="complaint_type_id" ref="juke_mobile_service.mobile_service_complaint_type_screen"/>
+        </record>
+        <record model="mobile_service.complaint_template" id="mobile_service_complaint_template_baterry_drop">
+            <field name="name">Baterry is draining first</field>
+            <field name="complaint_type_id" ref="juke_mobile_service.mobile_service_complaint_type_battery"/>
+        </record>
+        <record model="mobile_service.complaint_template" id="mobile_service_complaint_template_internal_heating">
+            <field name="name">Heating issue</field>
+            <field name="complaint_type_id" ref="juke_mobile_service.mobile_service_complaint_type_internal"/>
+        </record>
+        <record model="mobile_service.complaint_template" id="mobile_service_complaint_template_motherboard_hang">
+            <field name="name">Hand &amp; switch off issue</field>
+            <field name="complaint_type_id" ref="juke_mobile_service.mobile_service_complaint_type_motherboard"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record model="mobile_service.terms_and_conditions" id="mobile_service_terms_and_conditions_1">
+            <field name="terms_and_conditions">Take a bakcup of data. \n Incaseod any data loss , we are not responsible</field>
+        </record>
+        <record model="mobile_service.terms_and_conditions" id="mobile_service_terms_and_conditions_2">
+            <field name="terms_and_conditions">Check your device before submitting and after collectiong</field>
+        </record>
+        <record model="mobile_service.terms_and_conditions" id="mobile_service_terms_and_conditions_3">
+            <field name="terms_and_conditions">If the product is under warranty period. \n Warranty  proff is required.</field>
+        </record>
+
+    </data>
+</odoo>

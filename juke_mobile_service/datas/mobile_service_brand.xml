@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record model="mobile_service.brand" id="mobile_service_brand_samsung">
+            <field name="name">Samsung</field>
+        </record>
+        <record model="mobile_service.brand" id="mobile_service_brand_apple">
+            <field name="name">Apple</field>
+        </record>
+        <record model="mobile_service.brand" id="mobile_service_brand_oneplus">
+            <field name="name">Oneplus</field>
+        </record>
+        <record model="mobile_service.brand" id="mobile_service_brand_nokia">
+            <field name="name">Nokia</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record model="mobile_service.model" id="mobile_service_model_samsung_galaxys24">
+            <field name="name">Galaxy S24</field>
+            <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_samsung"/>
+        </record>
+        <record model="mobile_service.model" id="mobile_service_model_samsung_galaxys25">
+            <field name="name">Galaxy S25</field>
+            <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_samsung"/>
+        </record>
+        <record model="mobile_service.model" id="mobile_service_model_samsung_galaxys23">
+            <field name="name">Galaxy S23</field>
+            <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_samsung"/>
+        </record>
+        <record model="mobile_service.model" id="mobile_service_model_apple_iphone16">
+            <field name="name">iphone 16</field>
+            <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_apple"/>
+        </record>
+        <record model="mobile_service.model" id="mobile_service_model_apple_iphone15">
+            <field name="name">iphone 15</field>
+            <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_apple"/>
+        </record>
+        <record model="mobile_service.model" id="mobile_service_model_apple_iphone14">
+            <field name="name">iphone 14</field>
+            <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_apple"/>
+        </record>
+
+    </data>
+</odoo>

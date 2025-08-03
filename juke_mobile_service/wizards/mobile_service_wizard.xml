@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mobile_wervice_wizard_view_form" model="ir.ui.view">
+        <field name="name">mobile.service.open.wizard.view.form</field>
+        <field name="model">mobile_service.assign_wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="service_request_id" invisible="1"/>
+                        <field name="allowed_technicians" widget="many2many_tags" force_save="1" invisible="1"/>
+                        <field name="technician_id" options="{'no_open':True,'no_create':True}" required="1" domain="[('id', 'in', allowed_technicians)]"/>
+                    </group>
+                    <footer>
+                        <button string="Assign To Technician" name="add_technician" class="btn-primary" type="object"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <template id="report_mobile_service_request_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <style>
+                        strong {
+                            font-weight: bold !important;
+                        }
+                        th {
+                            font-weight: bold;
+                            text-align: center;
+                        }
+                    </style>
+
+                    <div class="header">
+                        <table style="width:100%; border:1px solid white;" border="0">
+                            <tr>
+                                <td style="vertical-align: middle; width:100%;">
+                                    <div>
+                                        <img t-att-src="image_data_uri(request.env.company.logo)" alt="logo" height="100"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="page">
+                        <div>
+                            <t t-set="company" t-value="request.env.company"/>
+                            <div style="text-align: left; margin-top: 10px; font-size: 12px;">
+                                <t t-esc="company.partner_id.name"/><br/>
+                                <t t-esc="company.partner_id.street"/><br/>
+                                <t t-if="company.partner_id.street2"><t t-esc="company.partner_id.street2"/><br/></t>
+                                <t t-esc="company.partner_id.city"/> <t t-esc="company.partner_id.zip"/><br/>
+                                <t t-esc="company.partner_id.state_id.name"/> <t t-esc="company.partner_id.country_id.name"/>
+                            </div>
+
+                            <br/>
+                            <h3>Service Request Ticket</h3>
+                            <table class="table table-borderless" style="width:75%;">
+                                <tr>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><span style="font-weight:bold !important;">Service No:</span></td>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><t t-esc="o.name"/></td>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><span style="font-weight:bold !important;">Requested Date:</span></td>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><t t-esc="o.requested_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><span style="font-weight:bold !important;">Customer:</span></td>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><t t-esc="o.customer_id.name"/></td>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><span style="font-weight:bold !important;">Return Date:</span></td>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><t t-esc="o.return_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><span style="font-weight:bold !important;">Technician:</span></td>
+                                    <td style="padding-top:2px; padding-bottom:0px;"><t t-esc="o.technician_id.name"/></td>
+                                </tr>
+                            </table>
+
+                            <br/>
+                            <h3>Device Details</h3>
+                            <table class="table table-bordered table-sm" style="width: 100%; border: 1px solid #000;">
+                            <thead>
+                                <tr style="background-color: #f0f0f0;">
+                                    <th style="font-weight: bold !important; text-align:center !important;"><b>Brand</b></th>
+                                    <th style="font-weight: bold !important; text-align:center !important;"><b>Model</b></th>
+                                    <th style="font-weight: bold !important; text-align:center !important;"><b>IMEI</b></th>
+                                    <th style="font-weight: bold !important; text-align:center !important;"><b>Complaint Type</b></th>
+                                    <th style="font-weight: bold !important; text-align:center !important;"><b>Complaint Desc</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.complaint_type_ids" t-as="line">
+                                    <tr>
+                                        <td><t t-esc="o.mobile_brand.display_name if o.mobile_brand else ''"/></td>
+                                        <td></td>
+                                        <td><t t-esc="o.imei if o.imei else ''"/></td>
+                                        <td><t t-esc="line.complaint_type_id"/></td>
+                                        <td><t t-esc="line.name"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            </table>
+                            
+                            <br/>
+                            <h4>Terms and Conditions</h4>
+                            <t t-esc="o.term_and_condition_id.terms_and_conditions if o.term_and_condition_id else ''"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_mobile_service_request" model="report.paperformat">
+        <field name="name">Service Request Ticket</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">25</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">25</field>
+        <field name="dpi">90</field>
+    </record>
+    
+    <record id="report_mobile_service_request" model="ir.actions.report">
+        <field name="name">Print Service Request Ticket</field>
+        <field name="model">mobile_service.service_request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="paperformat_id" ref="juke_mobile_service.paperformat_mobile_service_request"/>
+        <field name="report_name">juke_mobile_service.report_mobile_service_request_template</field>
+        <field name="report_file">juke_mobile_service.report_mobile_service_request_template</field>
+        <field name="binding_model_id" ref="juke_mobile_service.model_mobile_service_service_request"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

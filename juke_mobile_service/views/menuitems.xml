@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="root_mobile_service"
+        name="Mobile Service"
+        groups="juke_mobile_service.group_mobile_service_manager,juke_mobile_service.group_mobile_service_technician"
+        sequence="0"/>
+
+        <menuitem
+            id="mobile_service_request_parent"
+            name="Service Request"
+            action="mobile_service_service_request_action"
+            parent="root_mobile_service"
+            sequence="10"/>
+
+        <menuitem
+            id="mobile_service_part_inventory_parent"
+            name="Parts Inventory"
+            action="mobile_service_part_inventory_action"
+            parent="root_mobile_service"
+            sequence="20"/>
+
+        <menuitem
+            id="mobile_service_config_parent"
+            name="Configuration"
+            groups="juke_mobile_service.group_mobile_service_manager,juke_mobile_service.group_mobile_service_technician"
+            parent="root_mobile_service"
+            sequence="30"/>
+
+            <menuitem
+                id="mobile_service_brand_menu"
+                name="Brand"
+                action="mobile_service_brand_action"
+                groups=""
+                parent="mobile_service_config_parent"
+                sequence="1"/>
+            
+            <menuitem
+                id="mobile_service_models_menu"
+                name="Models"
+                action="mobile_service_model_action"
+                groups=""
+                parent="mobile_service_config_parent"
+                sequence="2"/>
+          
+            <menuitem
+                id="mobile_service_complain_types_menu"
+                name="Complaint Types"
+                action="mobile_service_complaint_type_action"
+                groups=""
+                parent="mobile_service_config_parent"
+                sequence="3"/>
+         
+            <menuitem
+                id="mobile_service_complain_templates_menu"
+                name="Complaint Templates"
+                action="mobile_service_complaint_template_action"
+                groups=""
+                parent="mobile_service_config_parent"
+                sequence="4"/>
+           
+            <menuitem
+                id="mobile_service_terms_conditions_menu"
+                name="Terms and Conditions"
+                action="mobile_service_terms_and_conditions_action"
+                groups=""
+                parent="mobile_service_config_parent"
+                sequence="5"/>
+
+</odoo>

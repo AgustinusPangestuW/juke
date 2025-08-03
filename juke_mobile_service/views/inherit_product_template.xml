@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Parts Inventory -->
+        <record id="mobile_service_part_inventory_view_kanban" model="ir.ui.view">
+            <field name="name">mobile_service_part_inventory_view_kanban</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <templates>
+                        <t t-name="card" class="flex-row">
+                            <main class="pe-2">
+                                <div class="mb-1">
+                                    <div class="d-flex mb-0 h5">
+                                        <field class="me-1" name="is_favorite" widget="boolean_favorite" nolabel="1"/>
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                                <span>
+                                    Price: <field name="list_price" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                </span>
+                            </main>
+                            <aside>
+                                <field name="image_128" widget="image" alt="Product" options="{'img_class': 'w-100 object-fit-contain'}" invisible="not image_128"/>
+                            </aside>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="mobile_service_part_inventory_action">
+            <field name="name">Products</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[('is_part_inventory','=',True)]</field>
+            <field name="view_id" ref="mobile_service_part_inventory_view_kanban"/>
+        </record>
+
+        <record id="product_template_view_form_inherit" model="ir.ui.view">
+            <field name="name">product_template_view_form_inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='options']/span" position="inside">
+                    <field name="is_part_inventory"/>
+                    <label for="is_part_inventory" string="Is Part Inventory"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="part_inventory" string="Under Part Inventory" invisible="not is_part_inventory">
+                        <group>
+                            <group>
+                                <field name="brand_id" options="{'no_open':True,'no_create':True}"/>
+                                <field name="model_id" options="{'no_open':True,'no_create':True}"/>
+                            </group>
+                            <group>
+                                <field name="color"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

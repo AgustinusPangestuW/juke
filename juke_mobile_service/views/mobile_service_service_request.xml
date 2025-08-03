@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- List View -->
+        <record model="ir.ui.view" id="mobile_service_service_request_tree">
+            <field name="name">mobile_service.service_request.tree</field>
+            <field name="model">mobile_service.service_request</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="customer_id"/>
+                    <field name="contact_number"/>
+                    <field name="mobile_brand_id"/>
+                    <field name="mobile_model_id"/>
+                    <field name="imei"/>
+                    <field name="technician_id"/>
+                    <field name="return_date"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+        
+        <!-- Form View -->
+        <record model="ir.ui.view" id="mobile_service_service_request_form">
+            <field name="name">mobile_service.service_request.form</field>
+            <field name="model">mobile_service.service_request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="ASSIGN TO TECHNICIAN" name="assign_to_tech" type="object" class="oe_highlight" invisible="state != 'draft'" groups="juke_mobile_service.group_mobile_service_manager"/>
+                        <button string="COMPLETED" name="completed_task" type="object" class="oe_highlight" invisible="state != 'assigned'" groups="juke_mobile_service.group_mobile_service_technician"/>
+                        <button string="NOT SOLVED" name="not_solved" type="object" class="oe_highlight" invisible="state != 'assigned'" groups="juke_mobile_service.group_mobile_service_technician"/>
+                        <button string="RETURN TO CUSTOMER" name="return_customer" type="object" class="oe_highlight" invisible="state != 'completed'" groups="juke_mobile_service.group_mobile_service_manager"/>
+                        <button string="PRINT TICKET" name="print_ticket" type="object" class="oe_highlight" invisible="ever_printed" groups="juke_mobile_service.group_mobile_service_manager"/>
+                        <button string="CREATE INVOICE" name="create_invoice" type="object" class="oe_highlight" invisible="ever_invoice" groups="juke_mobile_service.group_mobile_service_manager"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,returned,not_solved" class="ms-auto"/>
+                        <field name="ever_printed" invisible="1"/>
+                        <field name="ever_invoice" invisible="1"/>
+                    </header>
+                    <sheet>
+                        <div class="row">
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name" nolabel="1" placeholder="NEW"/>
+                                </h1>
+                            </div>
+                            <div class="mt-4 mb-2">
+                                <field name="is_warranty"/>
+                                <label for="is_warranty"/>
+                                <field name="is_repair"/>
+                                <label for="is_repair"/>
+                            </div>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id"/>
+                                <field name="contact_number" readonly="1" force_save="1"/>
+                                <field name="email" readonly="1" force_save="1"/>
+                                <field name="address" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                                <label for="mobile_brand_id" string="Mobile Brand"/>
+                                <div class="o_row">
+                                    <field name="mobile_brand_id" nolabel="0"/>
+                                    <field name="mobile_model_id" nolabel="1"/>
+                                </div>
+                                <field name="requested_date"/>
+                                <field name="return_date"/>
+                                <field name="allowed_technicians" widget="many2many_tags" invisible="1"/>
+                                <field name="technician_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="description" string="Description">
+                                <group>
+                                    <group>
+                                        <field name="imei"/>
+                                        <field name="warranty_no"/>
+                                        <field name="term_and_condition_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="notes"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="complain" string="Complaints">
+                                <field name="complaint_type_ids">
+                                    <list editable="bottom">
+                                        <field name="complaint_type_id"/>
+                                        <field name="name" string="Descriptions"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page name="parts" string="Parts Usage">
+                                <field name="service_part_ids">
+                                    <list editable="bottom">
+                                        <field name="service_id" column_invisible="1"/>
+                                        <field name="product_id"/>
+                                        <field name="quantity"/>
+                                        <field name="uom_id"/>
+                                        <field name="price" readonly="1"/>
+                                        <field name="stock" readonly="1"/>
+                                        <field name="invoice" readonly="1"/>
+                                        <field name="total_price" readonly="1"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="mobile_service_service_request_action">
+            <field name="name">Service Requests</field>
+            <field name="res_model">mobile_service.service_request</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </data>
+</odoo>

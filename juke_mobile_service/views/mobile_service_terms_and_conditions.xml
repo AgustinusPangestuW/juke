@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- List View -->
+        <record model="ir.ui.view" id="mobile_service_terms_and_conditions_tree">
+            <field name="name">mobile_service.terms_and_conditions.tree</field>
+            <field name="model">mobile_service.terms_and_conditions</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="terms_and_conditions"/>
+                </list>
+            </field>
+        </record>
+        
+        <!-- Form View -->
+        <record model="ir.ui.view" id="mobile_service_terms_and_conditions_form">
+            <field name="name">mobile_service.terms_and_conditions.form</field>
+            <field name="model">mobile_service.terms_and_conditions</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="terms_and_conditions"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="mobile_service_terms_and_conditions_action">
+            <field name="name">Nama Model</field>
+            <field name="res_model">mobile_service.terms_and_conditions</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </data>
+</odoo>

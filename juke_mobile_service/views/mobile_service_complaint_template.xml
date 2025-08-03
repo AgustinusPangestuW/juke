@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- List View -->
+        <record model="ir.ui.view" id="mobile_service_complaint_template_tree">
+            <field name="name">mobile_service.complaint_template.tree</field>
+            <field name="model">mobile_service.complaint_template</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="complaint_type_id"/>
+                    <field name="service_id"/>
+                </list>
+            </field>
+        </record>
+        
+        <!-- Form View -->
+        <record model="ir.ui.view" id="mobile_service_complaint_template_form">
+            <field name="name">mobile_service.complaint_template.form</field>
+            <field name="model">mobile_service.complaint_template</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="complaint_type_id"/>
+                            <field name="service_id"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="mobile_service_complaint_template_action">
+            <field name="name">Complaint Templates</field>
+            <field name="res_model">mobile_service.complaint_template</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </data>
+</odoo>

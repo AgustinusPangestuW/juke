@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record model="mobile_service.complaint_type" id="mobile_service_complaint_type_screen">
+            <field name="name">Screen</field>
+        </record>
+        <record model="mobile_service.complaint_type" id="mobile_service_complaint_type_battery">
+            <field name="name">Battery</field>
+        </record>
+        <record model="mobile_service.complaint_type" id="mobile_service_complaint_type_internal">
+            <field name="name">Internal</field>
+        </record>
+        <record model="mobile_service.complaint_type" id="mobile_service_complaint_type_motherboard">
+            <field name="name">Motherboard</field>
+        </record>
+
+    </data>
+</odoo>
