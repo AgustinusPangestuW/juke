@@ -72,13 +72,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="o.complaint_type_ids" t-as="line">
+                                <t t-foreach="o.complaint_ids" t-as="line">
                                     <tr>
-                                        <td><t t-esc="o.mobile_brand.display_name if o.mobile_brand else ''"/></td>
-                                        <td></td>
+                                        <td><t t-esc="o.mobile_brand_id.display_name if o.mobile_brand_id else ''"/></td>
+                                        <td><t t-esc="o.mobile_model_id.display_name if o.mobile_model_id else ''"/></td>
                                         <td><t t-esc="o.imei if o.imei else ''"/></td>
-                                        <td><t t-esc="line.complaint_type_id"/></td>
-                                        <td><t t-esc="line.name"/></td>
+                                        <td><t t-esc="line.complaint_type_id.display_name if line.complaint_type_id else ''"/></td>
+                                        <td><t t-esc="line.complaint_template_id.display_name if line.complaint_template_id else ''"/></td>
                                     </tr>
                                 </t>
                             </tbody>
@@ -118,6 +118,17 @@
         <field name="report_name">juke_mobile_service.report_mobile_service_request_template</field>
         <field name="report_file">juke_mobile_service.report_mobile_service_request_template</field>
         <field name="binding_model_id" ref="juke_mobile_service.model_mobile_service_service_request"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    
+    <record id="report_mobile_service_request_2" model="ir.actions.report">
+        <field name="name">Print Service Request Ticket</field>
+        <field name="model">mobile_service.service_request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="paperformat_id" ref="juke_mobile_service.paperformat_mobile_service_request"/>
+        <field name="report_name">juke_mobile_service.report_mobile_service_request_template</field>
+        <field name="report_file">juke_mobile_service.report_mobile_service_request_template</field>
         <field name="binding_type">report</field>
     </record>
 </odoo>

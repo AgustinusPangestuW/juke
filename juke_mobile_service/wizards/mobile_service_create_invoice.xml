@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="mobile_service_create_invoice_wizard_view_form" model="ir.ui.view">
+            <field name="name">mobile_service.create_invoice_wizard.view.form</field>
+            <field name="model">mobile_service.create_invoice_wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="service_request_id"/>
+                            <field name="method" widget="radio"/>
+                            <field name="amount"/>
+                        </group>
+                        <footer>
+                            <button string="Create Invoice" name="create_invoice" class="btn-primary" type="object"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    
+    </data>
+</odoo>

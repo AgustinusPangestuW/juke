@@ -3,8 +3,6 @@
     <data noupdate="1">
         <record id="group_mobile_service" model="ir.module.category">
             <field name="name">Mobile Service</field>
-            <field name="parent_id" ref=""/>
-            <field name="sequence" eval="100"/>
         </record>
         <record model="res.groups" id="group_mobile_service_technician">
             <field name="name">Technician</field>

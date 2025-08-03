@@ -4,27 +4,35 @@
 
         <record model="product.template" id="product_template_baterry">
             <field name="name">Baterry</field>
-            <field name="color">Black Titanium</field>
+            <field name="mobile_service_color">Black Titanium</field>
             <field name="list_price">1000</field>
             <field name="is_part_inventory">True</field>
+            <field name="is_storable">True</field>
             <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_samsung"/>
             <field name="model_id" ref="juke_mobile_service.mobile_service_model_samsung_galaxys24"/>
         </record>
         <record model="product.template" id="product_template_motherboard">
             <field name="name">Motherboard</field>
-            <field name="color">Motherboard</field>
+            <field name="mobile_service_color">Motherboard</field>
             <field name="list_price">2000</field>
             <field name="is_part_inventory">True</field>
+            <field name="is_storable">True</field>
             <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_samsung"/>
             <field name="model_id" ref="juke_mobile_service.mobile_service_model_samsung_galaxys24"/>
         </record>
         <record model="product.template" id="product_template_screen_protector">
             <field name="name">Screen Protector</field>
-            <field name="color">Black Titanium</field>
+            <field name="mobile_service_color">Black Titanium</field>
             <field name="list_price">150</field>
             <field name="is_part_inventory">True</field>
+            <field name="is_storable">True</field>
             <field name="brand_id" ref="juke_mobile_service.mobile_service_brand_samsung"/>
             <field name="model_id" ref="juke_mobile_service.mobile_service_model_samsung_galaxys24"/>
+        </record>
+        <record model="product.product" id="product_product_service_charge">
+            <field name="name">Mobile Service Charge</field>
+            <field name="type">service</field>
+            <field name="is_storable">True</field>
         </record>
 
     </data>

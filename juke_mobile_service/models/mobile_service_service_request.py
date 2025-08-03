@@ -26,7 +26,7 @@ class ServiceRequest(models.Model):
     warranty_no = fields.Char(string='Warranty No.', tracking=True)
     term_and_condition_id = fields.Many2one('mobile_service.terms_and_conditions', string='Terms and Conditions', tracking=True)
     notes = fields.Text(string='Internal Notes', tracking=True)
-    complaint_type_ids = fields.One2many('mobile_service.complaint_template', 'service_id', string='Complain Types', tracking=True)
+    complaint_ids = fields.One2many('mobile_service.service_request_complaint', 'service_id', string='Complaints', tracking=True)
     service_part_ids = fields.One2many('mobile_service.service_request_parts', 'service_id',string='Parts Usage', tracking=True)
     state = fields.Selection([
             ('draft', 'Draft'),
@@ -42,12 +42,34 @@ class ServiceRequest(models.Model):
         string='Invoices',
         compute="_compute_invoice_ids")
     count_invoice = fields.Integer(string='Count Invoice', compute="_compute_invoice_ids")
+    stock_move_ids = fields.Many2many(
+        comodel_name='stock.move', 
+        string='Stock Moves',
+        compute="_compute_stock_move_ids")
+    count_stock_move = fields.Integer(string='Count Stock Moves', compute="_compute_stock_move_ids")
+    
+    def _compute_stock_move_ids(self):
+        for rec in self:
+            stock_move_ids = self.env['stock.move'].search([('mobile_service_request_id', '=', rec.id)]).ids
+            rec.stock_move_ids = [(4, id) for id in stock_move_ids]
+            rec.count_stock_move = len(stock_move_ids)
     
     def _compute_invoice_ids(self):
         for rec in self:
-            invoice_ids = self.env['account.move'].search([('mobile_service_id', '=', rec.id)]).ids
+            invoice_ids = self.env['account.move'].search([('mobile_service_request_id', '=', rec.id)]).ids
             rec.invoice_ids = [(4, id) for id in invoice_ids]
             rec.count_invoice = len(invoice_ids)
+
+    def action_see_stock_move(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Stock Moves'),
+            'res_model': 'stock.move',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', self.stock_move_ids.ids)],
+            'views':  [[self.env.ref('stock.view_move_tree').id, 'list'], [self.env.ref('stock.view_move_form').id, 'form']],
+        }
 
     def action_see_invoice(self):
         self.ensure_one()
@@ -57,6 +79,7 @@ class ServiceRequest(models.Model):
             'res_model': 'account.move',
             'view_mode': 'tree,form',
             'domain': [('id', 'in', self.invoice_ids.ids)],
+            'views':  [[self.env.ref('account.view_out_invoice_tree').id, 'list'], [self.env.ref('account.view_move_form').id, 'form']],
         }
     
     def _compute_allowed_technicians(self):
@@ -82,7 +105,7 @@ class ServiceRequest(models.Model):
             'name': _('Assign To Technician'),
             'res_model': 'mobile_service.assign_wizard',
             'view_mode': 'form',
-            'views': [(self.env.ref('juke_mobile_service.mobile_wervice_wizard_view_form').id, 'form')],
+            'views': [(self.env.ref('juke_mobile_service.mobile_service_assign_wizard_view_form').id, 'form')],
             'context': {
                 'default_service_request_id': self.id,
                 'default_allowed_technicians': [(4, id) for id in technicians.ids],
@@ -90,8 +113,52 @@ class ServiceRequest(models.Model):
             'target': 'new',
         }
     
+    @api.onchange('mobile_brand_id')
+    def _onchange_mobile_brand_id(self):
+        for rec in self:
+            if rec.mobile_model_id and rec.mobile_brand_id and rec.mobile_model_id.brand_id.id != rec.mobile_brand_id.id:
+                rec.mobile_model_id = False
+
+    def create_stock_move(self):
+        def set_to_done(move_id):
+            for move in move_id:
+                move.write({'state': 'done'})
+                move.move_line_ids.write({'state': 'done'})
+
+        for rec in self:
+            for line in rec.service_part_ids:
+
+                move_id = rec.env['stock.move'].sudo().create({
+                    'name': line.product_id.name + " -  From " + rec._description + " [" + rec.name + "]",
+                    'product_id': line.product_id.id,
+                    'product_uom': line.uom_id.id or line.product_id.uom_id.id,
+                    'product_uom_qty': line.quantity,
+                    'location_id': rec.env.ref('stock.stock_location_stock').id,
+                    'location_dest_id': rec.env.ref('stock.stock_location_customers').id,
+                    # 'picking_type_id': rec.env.ref('stock.picking_type_out').id,
+                    'mobile_service_request_id': rec.id,
+                    'move_line_ids': [(0, 0, {
+                        'product_id': line.product_id.id,
+                        'product_uom_id': line.uom_id.id or line.product_id.uom_id.id,
+                        'quantity': line.quantity,
+                        'location_id': rec.env.ref('stock.stock_location_stock').id,
+                        'location_dest_id': rec.env.ref('stock.stock_location_customers').id,
+                        # 'picking_type_id': rec.env.ref('stock.picking_type_out').id,
+                        'mobile_service_request_id': rec.id,
+                        'mobile_service_request_line_id': line.id,
+                    })],
+                })
+                try:
+                    move_id.sudo()._action_confirm()
+                    move_id.sudo()._action_assign()
+                    set_to_done(move_id)
+                    move_id.sudo()._action_done()
+                except Exception as e:
+                    pass
+    
     def completed_task(self):
         for rec in self:
+            rec.create_stock_move()
             rec.state = 'completed'
 
     def not_solved(self):
@@ -103,28 +170,51 @@ class ServiceRequest(models.Model):
             rec.state = 'returned'
 
     def print_ticket(self):
-        return self.env.ref('juke_mobile_service.report_mobile_service_request').report_action(self)
+        return self.env.ref('juke_mobile_service.report_mobile_service_request_2').report_action(self)
 
     def create_invoice(self):
-        print("=============== Create Invoice ===============")
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Create Invoice'),
+            'res_model': 'mobile_service.create_invoice_wizard',
+            'view_mode': 'form',
+            'views': [(self.env.ref('juke_mobile_service.mobile_service_create_invoice_wizard_view_form').id, 'form')],
+            'target': 'new',
+            'context': {
+                'default_service_request_id': self.id,
+            },
+        }
+    
+
+class ServiceRequestComplaint(models.Model):
+    _name = 'mobile_service.service_request_complaint'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _description = 'Service Request Complaint'
+    _rec_name = 'complaint_type_id'
+
+    service_id = fields.Many2one('mobile_service.service_request', string='Service Request', tracking=True)
+    complaint_type_id = fields.Many2one('mobile_service.complaint_type', string='Complaint Type', tracking=True)
+    complaint_template_id = fields.Many2one('mobile_service.complaint_template', string='Description', tracking=True)
 
 
 class serviceRequestParts(models.Model):
     _name = 'mobile_service.service_request_parts'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Service Request Parts'
+    _rec_name = 'product_id'
 
-    service_id = fields.Many2one('mobile_service.service_request', string='Service Request')
-    product_id = fields.Many2one('product.template', string='Product', domain=[('is_part_inventory', '=', True)])
-    quantity = fields.Float(string='Quantity', default=1.0)
-    uom_id = fields.Many2one('uom.uom', string='Unit of Measure')
-    price = fields.Float(string='Unit Price', compute='_compute_unit_price', store=True)
-    stock = fields.Float(string='Stock')
+    service_id = fields.Many2one('mobile_service.service_request', string='Service Request', tracking=True)
+    product_id = fields.Many2one('product.template', string='Product', domain=[('is_part_inventory', '=', True)], tracking=True)
+    quantity = fields.Float(string='Quantity', default=1.0, tracking=True)
+    uom_id = fields.Many2one('uom.uom', string='Unit of Measure', tracking=True)
+    price = fields.Float(string='Unit Price', compute='_compute_unit_price', store=True, tracking=True)
+    stock = fields.Float(string='Stock Moved', compute="_compute_stock")
     invoice = fields.Float(string='Invoiced Qty', compute="_compute_invoiced_qty")
-    total_price = fields.Float(string='Price', compute='_compute_total_price', store=True)
+    total_price = fields.Float(string='Price', compute='_compute_total_price', store=True, tracking=True)
 
     def _compute_invoiced_qty(self):
         for rec in self:
-            invoice_ids = self.env['account.move.line'].search([('mobile_service_request_line_id', '=', rec.id)]).ids
+            invoice_ids = self.env['account.move.line'].search([('mobile_service_request_line_id', '=', rec.id)])
             rec.invoice = sum([i.quantity for i in invoice_ids])
 
     @api.depends('product_id')
@@ -133,7 +223,14 @@ class serviceRequestParts(models.Model):
             rec.price = 0.0
             if rec.product_id:
                 rec.price = rec.product_id.list_price if rec.product_id.list_price else 0.0
+                rec.uom_id = rec.product_id.uom_id if 'uom_id' in rec.product_id._fields else False
     
+    def _compute_stock(self):
+        for rec in self:
+            rec.stock = 0.0
+            move_line_ids = self.env['stock.move.line'].search([('mobile_service_request_line_id', '=', rec.id), ('state', '=', 'done')])
+            rec.stock = sum([i.quantity_product_uom for i in move_line_ids])
+
     @api.depends('price', 'quantity')
     def _compute_total_price(self):
         for rec in self:

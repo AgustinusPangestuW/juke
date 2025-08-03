@@ -31,13 +31,19 @@
                         <button string="COMPLETED" name="completed_task" type="object" class="oe_highlight" invisible="state != 'assigned'" groups="juke_mobile_service.group_mobile_service_technician"/>
                         <button string="NOT SOLVED" name="not_solved" type="object" class="oe_highlight" invisible="state != 'assigned'" groups="juke_mobile_service.group_mobile_service_technician"/>
                         <button string="RETURN TO CUSTOMER" name="return_customer" type="object" class="oe_highlight" invisible="state != 'completed'" groups="juke_mobile_service.group_mobile_service_manager"/>
-                        <button string="PRINT TICKET" name="print_ticket" type="object" class="oe_highlight" invisible="ever_printed" groups="juke_mobile_service.group_mobile_service_manager"/>
-                        <button string="CREATE INVOICE" name="create_invoice" type="object" class="oe_highlight" invisible="ever_invoice" groups="juke_mobile_service.group_mobile_service_manager"/>
+                        <button string="PRINT TICKET" name="print_ticket" type="object" class="oe_highlight" groups="juke_mobile_service.group_mobile_service_manager"/>
+                        <button string="CREATE INVOICE" name="create_invoice" type="object" class="oe_highlight" groups="juke_mobile_service.group_mobile_service_manager"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,returned,not_solved" class="ms-auto"/>
-                        <field name="ever_printed" invisible="1"/>
-                        <field name="ever_invoice" invisible="1"/>
                     </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_see_invoice" class="oe_stat_button" icon="fa-pencil-square-o" invisible="count_invoice == 0">
+                                <field name="count_invoice" widget="statinfo" string="Invoices"/>
+                            </button>
+                            <button type="object" name="action_see_stock_move" class="oe_stat_button" icon="fa-truck" invisible="count_stock_move == 0">
+                                <field name="count_stock_move" widget="statinfo" string="Moves"/>
+                            </button>
+                        </div>
                         <div class="row">
                             <div class="oe_title">
                                 <h1>
@@ -62,7 +68,7 @@
                                 <label for="mobile_brand_id" string="Mobile Brand"/>
                                 <div class="o_row">
                                     <field name="mobile_brand_id" nolabel="0"/>
-                                    <field name="mobile_model_id" nolabel="1"/>
+                                    <field name="mobile_model_id" domain="[('brand_id', '=', mobile_brand_id)]" nolabel="1" context="{'default_brand_id': mobile_brand_id}"/>
                                 </div>
                                 <field name="requested_date"/>
                                 <field name="return_date"/>
@@ -76,18 +82,20 @@
                                     <group>
                                         <field name="imei"/>
                                         <field name="warranty_no"/>
-                                        <field name="term_and_condition_id"/>
                                     </group>
                                     <group>
                                         <field name="notes"/>
                                     </group>
                                 </group>
+                                <group>
+                                    <field name="term_and_condition_id"/>
+                                </group>
                             </page>
                             <page name="complain" string="Complaints">
-                                <field name="complaint_type_ids">
+                                <field name="complaint_ids">
                                     <list editable="bottom">
                                         <field name="complaint_type_id"/>
-                                        <field name="name" string="Descriptions"/>
+                                        <field name="complaint_template_id" domain="[('complaint_type_id', '=', complaint_type_id)]" context="{'default_complaint_type_id': complaint_type_id}"/>
                                     </list>
                                 </field>
                             </page>

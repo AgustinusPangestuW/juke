@@ -5,7 +5,35 @@
     'summary': "Juke Mobile Service - Test",
 
     'description': """
-Long description of module's purpose
+        Mobile Service:
+            - Brand
+            - Model
+            - Complaint Type
+            - Complaint Templates
+            - Terms and Conditions
+
+        Service Request:
+            - Customer
+            - Contact Number
+            - Email
+            - Address
+            - Mobile Brand
+            - Mobile Model
+            - Requested Date
+            - Return Date
+            - IMEI Number
+            - Warranty No.
+            - Terms and Conditions
+
+        Service Request Parts:
+            - Product
+            - Quantity
+
+        Invoice:
+            - Mobile Service Request
+
+        Stock Move:
+            - Mobile Service Request (*when complete stage)
     """,
 
     'author': "Agustinus Pangestu Wijaya",
@@ -18,13 +46,14 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['mail', 'product', 'account'],
+    'depends': ['mail', 'product', 'stock', 'account', 'account_payment'],
 
     # always loaded
     'data': [
         'datas/groups.xml',
 
         'security/ir.model.access.csv',
+        'security/record_rule.xml',
 
         'views/mobile_service_brand.xml',
         'views/mobile_service_model.xml',
@@ -33,8 +62,11 @@ Long description of module's purpose
         'views/mobile_service_terms_and_conditions.xml',
         'views/inherit_product_template.xml',
         'views/mobile_service_service_request.xml',
-        'wizards/mobile_service_wizard.xml',
+        'views/inherit_res_company.xml',
         'views/menuitems.xml',
+
+        'wizards/mobile_service_wizard.xml',
+        'wizards/mobile_service_create_invoice.xml',
 
         'reports/invoice_report.xml',
 

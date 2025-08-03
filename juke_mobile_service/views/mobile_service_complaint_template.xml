@@ -9,7 +9,6 @@
                 <list>
                     <field name="name"/>
                     <field name="complaint_type_id"/>
-                    <field name="service_id"/>
                 </list>
             </field>
         </record>
@@ -26,7 +25,6 @@
                         <group>
                             <field name="name"/>
                             <field name="complaint_type_id"/>
-                            <field name="service_id"/>
                         </group>
                     </sheet>
                     <chatter/>

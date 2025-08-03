@@ -9,5 +9,4 @@ class ComplaintTemplate(models.Model):
 
     name = fields.Char(string='Complaint Description', required=True, tracking=True)
     complaint_type_id = fields.Many2one('mobile_service.complaint_type', string='Complaint Type', tracking=True)
-    service_id = fields.Many2one('mobile_service.service_request', string='Service Request', tracking=True)
     active = fields.Boolean(string='Active', default=True, tracking=True)
